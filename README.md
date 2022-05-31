@@ -1,11 +1,11 @@
 # DL_stormtiff_to_point_cloud
 Deep Learning based localization prediction for STORMTIFF images.
 
-This repository hosts the source code for a Deep Learning-based framework to predict from STORMTIFF images, the localizations and their 3D clustering. This 
-framework faciliates prediciton of otherwise missing point-cloud data for aligned STORMTIFF images.
+This repository hosts the source code for a Deep Learning-based framework to predict single molecule localizations and their 3D clustering from STORMTIFF images. This 
+framework faciliates prediction of otherwise missing point-cloud data for volumetrically aligned STORMTIFF images.
 
 Instructions:
-To implement this framework follow the steps mentioned below and run the scripts in same order as listed under 'Main' section. The 'Supplimentary' section 
+To implement this framework follow the steps mentioned below and run the scripts in same order as listed under 'Main' section. The 'Supplementary' section 
 either contains scripts for modules used in scripts from 'Main' section or has scripts that may help in additional analysis but are not needed for primary 
 implementation of the framework. The script filenames are prefixed with the folder path to store them.      
 
@@ -19,20 +19,20 @@ Step 1: Correct stormtiff image saturation.
 	1) analysis_path\\make_data\\pixel_intensity_transformation.py - To introduce soft-saturation to raw stormtiff images and then do the Gaussian blurring.
 	2) analysis_path\\make_data\\storm_save_out_no_transformation.py - (FIJI Macro) To convert images to uint8 format, to be run in FIJI.
 
-Step 1.5: Find ROIs using MATLAP, create folder "ML_result_xxx", where xxx is the channel. 
+Step 1.5: Find ROIs using MATLAB, create folder "ML_result_xxx", where xxx is the channel. 
 	
 
 Step 2: Prepare or edit a list of regions of interests (ROIs) from stormtiff image.
 	
-	A previously established STORM experiment analysis pipeline segments synapses from background in saturation-corrected stormtiff image and provides 
-	a list of ROIs in it. These ROIs are a squared shaped regions within stormtiff images and contain a segmented synapse. The list of ROIs provides 
+	A previously established STORM experiment analysis pipeline segments synapses from background in saturation-corrected stormtiff images and provides 
+	a list of ROIs in it. These ROIs are squared shaped regions within stormtiff images and contain a segmented synapse. The list of ROIs provides 
 	coordinates of each ROI, ROI ID and Stormtiff image number. For further analysis, ROIs can be chosen from this extensive list in many different ways.        	
 
 
 	Main:
 	1) analysis_path\\make_data\\make_df_shuffled_tile_list.py - To randomly shuffle the list of ROIs.
 
-	Supplimentary:
+	Supplementary:
 	1) analysis_path\\make_data\\make_df_mixed_tile_list.py - To make a list of first few fixed number of ROIs for each image number.
 
 Step 3: Signal intensity vs localization density analysis.
@@ -47,7 +47,7 @@ Step 3: Signal intensity vs localization density analysis.
 	3+) If the nearest-neighbor method doesn't work, use sig_intensity-vs_loc_density_simple.py instead to use the single pixel intensity. It might be useful if the number of localization is low. 
 		This code calculated weighted neighbor average and used the average rather than a linear fitting. 
 	
-	Supplimentary:
+	Supplementary:
 	1) analysis_path\\signal_and_loc_density_analysis\\sig_intesity_vs_loc_density.py - To plot nn-averaged signal intensity vs nn-averaged number of localizations per pixel. Fit the plot with polynomial function and save the fit parameters. 
         2) analysis_path\\signal_and_loc_density_analysis\\filtered_stormtiff_intesity_test.py - To count pixels with non-zero intensity.
 	3) analysis_path\\signal_and_loc_density_analysis\\max_sig_test.py - To compute maximum pixel intensity signal for given stormtiff image or a section of the image.    
@@ -60,7 +60,7 @@ Step 4: Prepare training data for the network.
 	3) analysis_path\\make_data\\locs_estimate_per_storm_image_to_file.py - To collect estimated localizations for ROIs.  
     4) analysis_path\\make_data\\make_data.py - To make input-output pairs to train or validate the network.
 
-	Supplimentary:
+	Supplementary:
 	1) analysis_path\\make_data\\get_list_empty_tiles.py - To get tile-list parameters and tile-number for empty tile(zero intensity everywhere).
         2) analysis_path\\make_data\\locs_estimate_per_storm_image.py - Module used for making estimations of localizations from stormtiff image tiles.
 	3) analysis_path\\make_data\\locs_estimate_per_storm_image_2.py - Module used for making estimations of localizations (wihtout nn-averaging) from stormtiff image tiles.  
@@ -77,13 +77,13 @@ Step 4: Prepare training data for the network.
 	14) analysis_path\\make_data\\tile_and_num_locs_plot.py - To plot estimated, predicted or ground-truth localizations found in tiles from given image section.
 
 Step 5: Training and validation experiments.
-	(IMPORTANT: on Einstein we have CUDA 10.1, which means you need tensorflow-gpu==2.3.0 to continue)
+	(IMPORTANT: on Einstein (Speer lab local HPC) we have CUDA 10.1, which means you need tensorflow-gpu==2.3.0 to continue)
 
         Main:
 	1) analysis_path\\experiments\\experiment_train.py - To build the neural network model and train it.
 	2) analysis_path\\experiments\\experiment_pred_to_file.py - To load previously trained model and test it on validation data.
 
-	Supplimentary:
+	Supplementary:
 	1) analysis_path\\experiments\\get_data.py - Module to collect and combine the data from all data files in given path.
 	2) analysis_path\\experiments\\locs_pred_random_plot.py - To plot the predicted localizations for a particular tile.
 	3) analysis_path\\experiments\\models.py - Module with classes to build neural network models using sequential() module in keras.
@@ -103,7 +103,7 @@ Step 6: Deploy the model to make localization predictions and perform 3D cluster
 	9) analysis_path\\3D_clustering_analysis\\dbscan.py - To perform 'DBSCAN' clustering analysis on 3D localization sequences.
 	10) analysis_path\\3D_clustering_analysis\\get_cluster_properties.py - Get cluster properties for predicted clusters.
 
-	Supplimentary:
+	Supplementary:
 	1) analysis_path\\3D_clustering_analysis\\cluster_properties_class.py - Module that has 'ClusterProperties' class.  
 	2) analysis_path\\3D_clustering_analysis\\cluster_properties_plot.py - To plot histograms of different properties of clusters predicted by 'DBSCAN'
 	3) analysis_path\\3D_clustering_analysis\\cluster_properties_to_csv.py - To write clusters properties to csv file.
