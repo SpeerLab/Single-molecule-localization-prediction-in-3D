@@ -7,9 +7,14 @@ framework faciliates prediction of otherwise missing point-cloud data for volume
 Instructions:
 To implement this framework follow the steps mentioned below and run the scripts in same order as listed under 'Main' section. The 'Supplementary' section 
 either contains scripts for modules used in scripts from 'Main' section or has scripts that may help in additional analysis but are not needed for primary 
-implementation of the framework. The script filenames are prefixed with the folder path to store them.      
+implementation of the framework. The script filenames are prefixed with the folder path to store them.
 
-Step 1: Correct stormtiff image saturation.
+## For prediction
+Prediction_batch contains .bat files for batch single-molecule prediction + subsynaptic cluster identification + data storage for further investigation. The code strucutre is significantly simplified and the process is much faster. 
+
+Trained modeled and linear-fitting parameters are required before doing the batch processing. 
+
+## Step 1: Correct stormtiff image saturation.
 
         To facilitate the alignment process, the Stormtiff images are artifically saturated to some extent. Due to this saturation of most of the bright 
 	pixels in clusters, the pixel intensity gradients are lost. To get rid of the saturation effects we introduce a soft-saturation alternative which 
@@ -19,10 +24,10 @@ Step 1: Correct stormtiff image saturation.
 	1) analysis_path\\make_data\\pixel_intensity_transformation.py - To introduce soft-saturation to raw stormtiff images and then do the Gaussian blurring.
 	2) analysis_path\\make_data\\storm_save_out_no_transformation.py - (FIJI Macro) To convert images to uint8 format, to be run in FIJI.
 
-Step 1.5: Find ROIs using MATLAB, create folder "ML_result_xxx", where xxx is the channel. 
+## Step 1.5: Find ROIs using MATLAB, create folder "ML_result_xxx", where xxx is the channel. 
 	
 
-Step 2: Prepare or edit a list of regions of interests (ROIs) from stormtiff image.
+## Step 2: Prepare or edit a list of regions of interests (ROIs) from stormtiff image.
 	
 	A previously established STORM experiment analysis pipeline segments synapses from background in saturation-corrected stormtiff images and provides 
 	a list of ROIs in it. These ROIs are squared shaped regions within stormtiff images and contain a segmented synapse. The list of ROIs provides 
@@ -35,7 +40,7 @@ Step 2: Prepare or edit a list of regions of interests (ROIs) from stormtiff ima
 	Supplementary:
 	1) analysis_path\\make_data\\make_df_mixed_tile_list.py - To make a list of first few fixed number of ROIs for each image number.
 
-Step 3: Signal intensity vs localization density analysis.
+## Step 3: Signal intensity vs localization density analysis.
 
 	We plot nearest-neighbor (nn) averaged pixel intensity vs nearest-neighbor-averaged localization density which helps in initial estimation of 
 	localization density from stormtiff image tile.
@@ -52,7 +57,7 @@ Step 3: Signal intensity vs localization density analysis.
         2) analysis_path\\signal_and_loc_density_analysis\\filtered_stormtiff_intesity_test.py - To count pixels with non-zero intensity.
 	3) analysis_path\\signal_and_loc_density_analysis\\max_sig_test.py - To compute maximum pixel intensity signal for given stormtiff image or a section of the image.    
 
-Step 4: Prepare training data for the network.
+## Step 4: Prepare training data for the network.
 
         Main: 
 	1) analysis_path\\make_data\\full_pixel_list.py - To create a single pixel list of all the pixels from the clusters (connected components) in given list of ROIs.
@@ -76,7 +81,7 @@ Step 4: Prepare training data for the network.
 	13) analysis_path\\make_data\\model_input_output.py - Module to collect input-output pairs for training or validation data.
 	14) analysis_path\\make_data\\tile_and_num_locs_plot.py - To plot estimated, predicted or ground-truth localizations found in tiles from given image section.
 
-Step 5: Training and validation experiments.
+## Step 5: Training and validation experiments.
 	(IMPORTANT: on Einstein (Speer lab local HPC) we have CUDA 10.1, which means you need tensorflow-gpu==2.3.0 to continue)
 
         Main:
@@ -89,7 +94,7 @@ Step 5: Training and validation experiments.
 	3) analysis_path\\experiments\\models.py - Module with classes to build neural network models using sequential() module in keras.
 	4) analysis_path\\experiments\\training_plot.py - To plot training history (training error vs epoch) for given experiment.
 
-Step 6: Deploy the model to make localization predictions and perform 3D clustering analysis.
+## Step 6: Deploy the model to make localization predictions and perform 3D clustering analysis.
 
 	Main:
 	1) analysis_path\\3D_clustering_analysis\\remove_empty_tiles_tile_list.py - To remove empty ROIs from list, if present.
